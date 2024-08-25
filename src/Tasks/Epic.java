@@ -15,10 +15,12 @@ public class Epic extends Task {
     public void addSubTask(int id, String name, String descr) {
         SubTask subTask = new SubTask(name, descr, Status.NEW, id, this.id);
         subTasks.put(id, subTask);
+        calculateStatus();
     }
 
     public void addSubTask(int id, SubTask subTask) {
         subTasks.put(id, subTask);
+        calculateStatus();
     }
 
     public HashMap<Integer, SubTask> readSubTasks() {
