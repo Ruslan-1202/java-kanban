@@ -1,11 +1,11 @@
-package Tasks;/* Из ТЗ:
+package tasks;/* Из ТЗ:
 Для эталонного решения мы выбрали создание публичного не абстрактного класса Tasks.Task,
 который представляет отдельно стоящую задачу. Его данные наследуют подклассы Subtask и Tasks.Epic.
 В нашем задании класс Tasks.Task можно использовать сам по себе, не делая его абстрактным.
 */
 
 import java.util.Objects;
-import Enums.*;
+import enums.*;
 
 public class Task {
 
@@ -21,6 +21,10 @@ public class Task {
         this.descr = descr;
     }
 
+    public Task(String name, String descr, int id) {
+        this(name, descr, Status.NEW, id);
+    }
+
     public int getId() {
         return id;
     }
@@ -31,6 +35,22 @@ public class Task {
 
     public void setStaus(Status status) {
         this.status = status;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getDescr() {
+        return descr;
+    }
+
+    public void setDescr(String descr) {
+        this.descr = descr;
     }
 
     @Override

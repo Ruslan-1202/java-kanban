@@ -1,9 +1,7 @@
 //import java.util.HashMap;
 
-import Enums.Status;
-import Tasks.*;
-
-import java.util.HashMap;
+import enums.Status;
+import tasks.*;
 
 public class Main {
 
@@ -19,31 +17,42 @@ public class Main {
         taskManager.addTask("Task 3", "Descr 3");
 
         int i = taskManager.addEpic("Epic 1", "Descr Ep 1");
-        Epic epic1 = taskManager.getEpic(i);
+
         taskManager.addSubTask("Sub 1", "Descr 1", i);
         int j = taskManager.addSubTask("Sub 2", "Descr 2", i);
         SubTask sub2 = taskManager.getSubTask(j);
-        sub2.setStaus(Status.IN_PROGRESS);
+        sub2.setStaus(Status.DONE);
         taskManager.updateSubTask(sub2);
-        for ( Epic task: taskManager.readEpics().values() ) {
+
+        System.out.println("\nЭпик и сабтаски");
+        for ( Epic task: taskManager.readEpics() ) {
             System.out.println(task);
         }
+        for ( SubTask task: taskManager.readSubTasks() ) {
+            System.out.println(task);
+        }
+
+        Epic epic2 = new Epic("Epic 2", "DesEpic 2", taskManager.getNewId());
+        taskManager.addEpic(epic2);
+
         taskManager.removeSubTask(j);
         SubTask sub1 = taskManager.getSubTask(5);
         sub1.setStaus(Status.DONE);
         taskManager.updateSubTask(sub1);
-        int j1 = taskManager.addSubTask("Sub 2", "Descr 2", i);
-        for ( Epic task: taskManager.readEpics().values() ) {
+
+        System.out.println("\nЭпики после изменения статусов:");
+        for ( Epic task: taskManager.readEpics() ) {
             System.out.println(task);
         }
 
-        for ( Task task: taskManager.readTasks().values() ) {
+        System.out.println("\nFinal status:");
+        for ( Task task: taskManager.readTasks() ) {
             System.out.println(task);
         }
-        for ( Epic task: taskManager.readEpics().values() ) {
+        for ( Epic task: taskManager.readEpics() ) {
             System.out.println(task);
         }
-        for ( SubTask task: taskManager.readSubTasks().values() ) {
+        for ( SubTask task: taskManager.readSubTasks() ) {
             System.out.println(task);
         }
     }
