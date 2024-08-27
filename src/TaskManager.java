@@ -118,6 +118,7 @@ public class TaskManager {
                 break;
             case EPIC:
                 epics.clear();
+                subTasks.clear();
                 break;
             case SUB_TASK:
                 for (Epic epic : epics.values()) {
@@ -177,6 +178,7 @@ public class TaskManager {
                 tasks.remove(id);
                 break;
             case EPIC:
+                removeSubTasksInEpic(id);
                 epics.remove(id);
                 break;
             case SUB_TASK:
@@ -209,18 +211,20 @@ public class TaskManager {
     public void updateEpic(Epic epic) {
         if (epic == null) return;
         int id = epic.getId();
+
         Epic oldEpic = epics.get(id);
+        if (oldEpic == null) {
+            System.out.println("Такого эпика нет в списке");
+            return;
+        }
 //        нельзя менять статус эпика вручную
         if (!oldEpic.getStaus().equals(epic.getStaus())) {
             System.out.println("Нельзя менять статус эпика");
             return;
         }
-        if (epics.get(id) == null) {
-            System.out.println("Такого эпика нет в списке");
-            return;
-        }
 
         epics.put(id, epic);
+        calculateStatus(id);
     }
 
     public void updateSubTask(SubTask subTask) {
@@ -247,6 +251,21 @@ public class TaskManager {
         return subTasks;
     }
 //    ==============================
+    //Удаление сабтасков из эпика
+    public void removeSubTasksInEpic(int epicId) {
+        Epic epic = epics.get(epicId);
+        if (epic == null) {
+            return;
+        }
+
+        ArrayList<Integer> epicSubTasks = epic.readSubTasks();
+
+        for (int id: epicSubTasks) {
+            subTasks.remove(id);
+            epic.removeSubTask(id);
+        }
+        epic.clearSubTasks();
+    }
 
     //    расчет статуса эпика по сабтакскам
     public void calculateStatus(int epicId) {
