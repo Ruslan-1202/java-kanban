@@ -1,14 +1,15 @@
 //import java.util.HashMap;
 
 import enums.Status;
-import tasks.*;
+import model.*;
+import service.TaskManager;
 
 public class Main {
 
     public static void main(String[] args) {
         System.out.println("Поехали!");
 
-     //   Данный код для тестирования и примеров вызовов методов
+        //   Данный код для тестирования и примеров вызовов методов
 
         TaskManager taskManager = new TaskManager();
 
@@ -25,15 +26,25 @@ public class Main {
         taskManager.updateSubTask(sub2);
 
         System.out.println("\nЭпик и сабтаски");
-        for ( Epic task: taskManager.readEpics() ) {
+        for (Epic task : taskManager.readEpics()) {
             System.out.println(task);
         }
-        for ( SubTask task: taskManager.readSubTasks() ) {
+        for (SubTask task : taskManager.readSubTasks()) {
             System.out.println(task);
         }
 
-        Epic epic2 = new Epic("Epic 2", "DesEpic 2", taskManager.getNewId());
+        Epic epic2 = new Epic("Epic 2", "DesEpic 2", 0);
         taskManager.addEpic(epic2);
+
+        Epic epic3 = null;
+         try {
+             epic3 = taskManager.getEpic(i);
+         } catch (CloneNotSupportedException e) {
+
+         }
+
+        epic3.setStaus(Status.DONE);
+        taskManager.updateEpic(epic3);
 
         taskManager.removeSubTask(j);
         SubTask sub1 = taskManager.getSubTask(5);
@@ -41,18 +52,18 @@ public class Main {
         taskManager.updateSubTask(sub1);
 
         System.out.println("\nЭпики после изменения статусов:");
-        for ( Epic task: taskManager.readEpics() ) {
+        for (Epic task : taskManager.readEpics()) {
             System.out.println(task);
         }
 
         System.out.println("\nFinal status:");
-        for ( Task task: taskManager.readTasks() ) {
+        for (Task task : taskManager.readTasks()) {
             System.out.println(task);
         }
-        for ( Epic task: taskManager.readEpics() ) {
+        for (Epic task : taskManager.readEpics()) {
             System.out.println(task);
         }
-        for ( SubTask task: taskManager.readSubTasks() ) {
+        for (SubTask task : taskManager.readSubTasks()) {
             System.out.println(task);
         }
     }

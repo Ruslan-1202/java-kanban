@@ -1,4 +1,4 @@
-package tasks;
+package model;
 
 import enums.*;
 
@@ -6,7 +6,8 @@ import java.util.ArrayList;
 
 public class Epic extends Task {
 
-    private ArrayList<Integer> subTasks;
+    private ArrayList<Integer> subTasks; //плоская модель
+    //private ArrayList<SubTask> subTasks; //объектная модель
 
     public Epic(String name, String descr, Status status, int id) {
         super(name, descr, status, id);
@@ -31,5 +32,11 @@ public class Epic extends Task {
 
     public void removeSubTask(int id) {
         subTasks.remove(Integer.valueOf(id));
+    }
+
+    @Override
+    public Epic clone() throws CloneNotSupportedException {
+        Epic epic = new Epic(this.name, this.descr, this.status, this.id);
+        return epic;
     }
 }

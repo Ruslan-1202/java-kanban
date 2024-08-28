@@ -1,10 +1,11 @@
-package tasks;
+package model;
 
 import enums.*;
 
 public class SubTask extends Task {
 
-    private int epicId;
+    private int epicId; //плоская модель
+//    private Epic epic; // объектная модель
 
     public SubTask(String name, String descr, Status status, int id, int epicId) {
         super(name, descr, status, id);

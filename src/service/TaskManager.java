@@ -1,5 +1,7 @@
+package service;
+
 import enums.*;
-import tasks.*;
+import model.*;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -19,24 +21,28 @@ public class TaskManager {
         subTasks = new HashMap<>();
     }
 
-    public int getNewId() {
+    private int getNewId() {
         return ++counterId;
     }
 
     //  Создание новой задачи
 //    ==============================
     public int addTask(String name, String descr) {
-        counterId++;
-        Task task = new Task(name, descr, Status.NEW, counterId);
-        tasks.put(counterId, task);
-        return counterId;
+        Task task = addTask(new Task(name, descr, Status.NEW, 0));
+        return task.getId();
     }
 
-    public int addTask(Task task) {
-        int id = task.getId();
-        tasks.put(id, task);
-        return id;
+    public Task addTask(Task task) {
+        task.setId(getNewId());
+        tasks.put(task.getId(), task);
+        return task;
     }
+
+//    public int addTask(Task task) {
+//        int id = task.getId();
+//        tasks.put(id, task);
+//        return id;
+//    }
 
     public int addEpic(String name, String descr) {
         counterId++;
@@ -45,10 +51,11 @@ public class TaskManager {
         return counterId;
     }
 
-    public int addEpic(Epic epic) {
-        int id = epic.getId();
-        epics.put(id, epic);
-        return id;
+    public Epic addEpic(Epic epic) {
+        int id = getNewId();
+        Epic newEpic = new Epic(epic.getName(), epic.getDescr(), id);
+        epics.put(id, newEpic);
+        return newEpic;
     }
 
     public int addSubTask(String name, String descr, int idEpic) {
@@ -64,16 +71,17 @@ public class TaskManager {
         return counterId;
     }
 
-    public int addSubTask(SubTask subTask, int idEpic) {
+    public SubTask addSubTask(SubTask subTask, int idEpic) {
         Epic epic = epics.get(idEpic);
         if (epic == null) {
-            return 0;
+            return null;
         }
+        subTask.setId(getNewId());
         int id = subTask.getId();
         subTasks.put(id, subTask);
         epic.addSubTask(id);
         calculateStatus(idEpic);
-        return id;
+        return subTask;
     }
 //    ==============================
 
@@ -123,7 +131,7 @@ public class TaskManager {
             case SUB_TASK:
                 for (Epic epic : epics.values()) {
                     epic.clearSubTasks();
-                    calculateStatus(epic.getId());
+                    epic.setStaus(Status.NEW);
                 }
                 subTasks.clear();
                 break;
@@ -149,8 +157,8 @@ public class TaskManager {
         return tasks.get(id);
     }
 
-    public Epic getEpic(int id) {
-        return epics.get(id);
+    public Epic getEpic(int id) throws CloneNotSupportedException {
+        return epics.get(id).clone();
     }
 
     public SubTask getSubTask(int id) {
@@ -210,21 +218,15 @@ public class TaskManager {
 
     public void updateEpic(Epic epic) {
         if (epic == null) return;
-        int id = epic.getId();
 
-        Epic oldEpic = epics.get(id);
-        if (oldEpic == null) {
+        Epic newEpic = epics.get(epic.getId());
+        if (newEpic == null) {
             System.out.println("Такого эпика нет в списке");
             return;
         }
-//        нельзя менять статус эпика вручную
-        if (!oldEpic.getStaus().equals(epic.getStaus())) {
-            System.out.println("Нельзя менять статус эпика");
-            return;
-        }
-
-        epics.put(id, epic);
-        calculateStatus(id);
+//        обновляем только то что можно
+        newEpic.setName(epic.getName());
+        newEpic.setDescr(epic.getDescr());
     }
 
     public void updateSubTask(SubTask subTask) {
@@ -268,7 +270,7 @@ public class TaskManager {
     }
 
     //    расчет статуса эпика по сабтакскам
-    public void calculateStatus(int epicId) {
+    private void calculateStatus(int epicId) {
 //        проверим, все ли DONE
         boolean isAllDone = true;
         boolean isAllNew = true;
