@@ -4,8 +4,8 @@ import enums.*;
 
 public class Task {
 
-    protected String name;
-    protected String descr;
+    private String name;
+    private String descr;
     protected int id;
     protected Status status;
 
@@ -16,8 +16,8 @@ public class Task {
         this.descr = descr;
     }
 
-    public Task(String name, String descr, int id) {
-        this(name, descr, Status.NEW, id);
+    public Task(String name, String descr) {
+        this(name, descr, Status.NEW, 0);
     }
 
     public void setId(int id) {

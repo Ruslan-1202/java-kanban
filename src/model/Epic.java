@@ -23,7 +23,7 @@ public class Epic extends Task {
     }
 
     public ArrayList<Integer> readSubTasks() {
-        return (ArrayList<Integer>)(subTasks.clone());
+        return subTasks;
     }
 
     public void clearSubTasks() {
@@ -32,11 +32,5 @@ public class Epic extends Task {
 
     public void removeSubTask(int id) {
         subTasks.remove(Integer.valueOf(id));
-    }
-
-    @Override
-    public Epic clone() throws CloneNotSupportedException {
-        Epic epic = new Epic(this.name, this.descr, this.status, this.id);
-        return epic;
     }
 }
