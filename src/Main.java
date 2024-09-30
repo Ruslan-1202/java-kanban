@@ -7,11 +7,13 @@ import service.InMemoryTaskManager;
 import service.Managers;
 import service.TaskManager;
 
+import java.util.*;
+
 public class Main {
 
     public static void main(String[] args) {
         System.out.println("Поехали!");
-
+        Map<String, Integer> tt = new TreeMap<>();
         //   Данный код для тестирования и примеров вызовов методов
 
         //InMemoryTaskManager taskManager = new InMemoryTaskManager();

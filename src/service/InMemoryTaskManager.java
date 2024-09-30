@@ -18,12 +18,11 @@ public class InMemoryTaskManager implements TaskManager {
 
     private HistoryManager historyManager;
 
-    public InMemoryTaskManager() {
+    public InMemoryTaskManager(HistoryManager historyManager) { //надо вот так
+        this.historyManager = historyManager;
         tasks = new HashMap<>();
         epics = new HashMap<>();
         subTasks = new HashMap<>();
-
-        historyManager = Managers.getDefaultHistory();
     }
 
     private int getNewId() {
@@ -75,29 +74,17 @@ public class InMemoryTaskManager implements TaskManager {
 //    ==============================
     @Override
     public List<Task> readTasks() {
-        List newTasks = new ArrayList<>();
-        for (Task task : tasks.values()) {
-            newTasks.add(task);
-        }
-        return newTasks;
+        return new ArrayList<>(tasks.values());
     }
 
     @Override
     public List<Epic> readEpics() {
-        List newEpics = new ArrayList<>();
-        for (Epic epic : epics.values()) {
-            newEpics.add(epic);
-        }
-        return newEpics;
+        return new ArrayList<>(epics.values());
     }
 
     @Override
     public List<SubTask> readSubTasks() {
-        List newSubTasks = new ArrayList<>();
-        for (SubTask subTask : subTasks.values()) {
-            newSubTasks.add(subTask);
-        }
-        return newSubTasks;
+        return new ArrayList<>(subTasks.values());
     }
 //    ==============================
 
