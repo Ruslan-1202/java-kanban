@@ -106,18 +106,31 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     private void clearTasks() {
+        for (int id: tasks.keySet()) {
+            historyManager.remove(id);
+        }
+
         tasks.clear();
     }
 
     private void clearEpics() {
+        for (int id: epics.keySet()) {
+            historyManager.remove(id);
+        }
         epics.clear();
-        subTasks.clear();
+
+        //subTasks.clear();
+        clearSubTasks();
     }
 
     private void clearSubTasks() {
         for (Epic epic : epics.values()) {
             epic.clearSubTasks();
             epic.setStaus(Status.NEW);
+        }
+
+        for (int id: subTasks.keySet()) {
+            historyManager.remove(id);
         }
         subTasks.clear();
     }
