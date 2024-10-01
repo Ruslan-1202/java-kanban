@@ -66,7 +66,7 @@ class TestTasks {
 
         Task task = new Task("Test removeTasks", "Test removeTasks description");
         taskManager.addTask(task);
-        taskManager.removeTask(task.getId());
+        taskManager.removeTask(TaskKind.TASK, task.getId());
         tasks = taskManager.readTasks();
 
         assertEquals(0, tasks.size(), "При удалении единственной задачи список не пуст");
@@ -74,7 +74,7 @@ class TestTasks {
         taskManager.addTask(task);
         Task task2 = new Task("Test removeTasks2", "Test removeTasks2 description");
         taskManager.addTask(task2);
-        taskManager.removeTask(task.getId());
+        taskManager.removeTask(TaskKind.TASK, task.getId());
         tasks = taskManager.readTasks();
 
         assertNotEquals(0, tasks.size(), "При удалении не единственной задачи список пуст");

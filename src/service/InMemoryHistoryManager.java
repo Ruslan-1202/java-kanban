@@ -16,6 +16,11 @@ public class InMemoryHistoryManager implements HistoryManager {
     }
 
     @Override
+    public void remove(int id) {
+
+    }
+
+    @Override
     public void add(Task task) {
         if (history.size() >= MAX_HISTORY) {
             history.remove(0);
