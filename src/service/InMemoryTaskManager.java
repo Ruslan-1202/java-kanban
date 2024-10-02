@@ -1,7 +1,10 @@
 package service;
 
-import enums.*;
-import model.*;
+import enums.Status;
+import enums.TaskKind;
+import model.Epic;
+import model.SubTask;
+import model.Task;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -105,7 +108,7 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     private void clearTasks() {
-        for (int id: tasks.keySet()) {
+        for (int id : tasks.keySet()) {
             historyManager.remove(id);
         }
 
@@ -113,7 +116,7 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     private void clearEpics() {
-        for (int id: epics.keySet()) {
+        for (int id : epics.keySet()) {
             historyManager.remove(id);
         }
         epics.clear();
@@ -128,7 +131,7 @@ public class InMemoryTaskManager implements TaskManager {
             epic.setStaus(Status.NEW);
         }
 
-        for (int id: subTasks.keySet()) {
+        for (int id : subTasks.keySet()) {
             historyManager.remove(id);
         }
         subTasks.clear();

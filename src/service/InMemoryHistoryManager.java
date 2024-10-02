@@ -4,7 +4,6 @@ import model.Task;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 
 public class InMemoryHistoryManager implements HistoryManager {
@@ -50,11 +49,11 @@ public class InMemoryHistoryManager implements HistoryManager {
         return newNode;
     }
 
-    public List<Task> getTasks () {
+    public List<Task> getTasks() {
         Node<Task> node = headNode;
         List<Task> tasks = new ArrayList<>();
 
-        while (node != null ) {
+        while (node != null) {
             tasks.add(node.data);
             node = node.next;
         }
