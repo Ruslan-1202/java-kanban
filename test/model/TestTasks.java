@@ -82,10 +82,22 @@ class TestTasks {
 
     @Test
     void addHistory() {
-        Task task = new Task("Test history task", "Test history task description");
+        Task task = new Task("Test history task", "Test history task description", Status.NEW, 1);
         historyManager.add(task);
-        final List<Task> history = historyManager.getHistory();
+        List<Task> history = historyManager.getHistory();
         assertNotNull(history, "История не пустая.");
-        assertEquals(1, history.size(), "История не пустая.");
+        assertEquals(1, history.size(), "Размер истории не 1.");
+
+        Task task2 = new Task("Task 2", "Task descr 2", Status.NEW, 2);
+        historyManager.add(task2);
+        history = historyManager.getHistory();
+        assertEquals(2, history.size(), "Размер истории не 2.");
+
+        //добавляем таск с тем же ИД, должна замениться
+        Task task3 = new Task("Task 1", "Task descr 1", Status.NEW, 1);
+        historyManager.add(task3);
+        history = historyManager.getHistory();
+        assertEquals(2, history.size(), "Размер истории не 2.");
     }
+
 }
