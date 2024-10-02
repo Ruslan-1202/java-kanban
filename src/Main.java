@@ -12,7 +12,6 @@ public class Main {
 
     public static void main(String[] args) {
         System.out.println("Поехали!");
-        Map<String, Integer> tt = new TreeMap<>();
         //   Данный код для тестирования и примеров вызовов методов
 
         TaskManager taskManager = Managers.getDefault();
@@ -76,7 +75,7 @@ public class Main {
         taskManager.updateSubTask(sub1);
 
         for (int i = 0; i < 8; i++) {
-            Task task34 =  taskManager.getEpic(epic2.getId());;
+            Task task34 =  taskManager.getEpic(epic2.getId());
         }
 
         System.out.println("\nЭпики после изменения статусов:");

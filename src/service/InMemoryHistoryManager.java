@@ -9,14 +9,11 @@ import java.util.List;
 
 public class InMemoryHistoryManager implements HistoryManager {
 
-    private final int MAX_HISTORY = 10;
-    private LinkedList<Task> history;
-    private HashMap<Integer, Node<Task>> historyMap;
+    final private HashMap<Integer, Node<Task>> historyMap;
     private Node<Task> headNode;
     private Node<Task> tailNode;
 
     public InMemoryHistoryManager() {
-        history = new LinkedList<>();
         historyMap = new HashMap<>();
     }
 
@@ -32,10 +29,6 @@ public class InMemoryHistoryManager implements HistoryManager {
         removeNode(historyMap.get(id));
         var newNode = linkLast(task);
         historyMap.put(id, newNode);
-//        if (history.size() >= MAX_HISTORY) {
-//            history.remove(0);
-//        }
-//        history.add(task);
     }
 
     @Override
@@ -43,7 +36,7 @@ public class InMemoryHistoryManager implements HistoryManager {
         return getTasks();
     }
 
-    public Node<Task> linkLast(Task task) {
+    private Node<Task> linkLast(Task task) {
         Node<Task> newNode = new Node<>(task);
         if (headNode == null) {
             headNode = newNode;
