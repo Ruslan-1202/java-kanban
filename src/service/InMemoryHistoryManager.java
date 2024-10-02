@@ -8,7 +8,7 @@ import java.util.List;
 
 public class InMemoryHistoryManager implements HistoryManager {
 
-    final private HashMap<Integer, Node<Task>> historyMap;
+    private final HashMap<Integer, Node<Task>> historyMap;
     private Node<Task> headNode;
     private Node<Task> tailNode;
 
@@ -81,20 +81,22 @@ public class InMemoryHistoryManager implements HistoryManager {
         }
 
     }
+
+    class Node<T> {
+        T data;
+        Node<T> prev;
+        Node<T> next;
+
+        public Node(T data) {
+            this.data = data;
+        }
+
+        public Node(T data, Node<T> prev, Node<T> next) {
+            this.data = data;
+            this.prev = prev;
+            this.next = next;
+        }
+    }
 }
 
-class Node<T> {
-    T data;
-    Node<T> prev;
-    Node<T> next;
 
-    public Node(T data) {
-        this.data = data;
-    }
-
-    public Node(T data, Node<T> prev, Node<T> next) {
-        this.data = data;
-        this.prev = prev;
-        this.next = next;
-    }
-}
