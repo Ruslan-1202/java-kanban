@@ -31,11 +31,6 @@ public interface TaskManager {
     // Удаление одной задачи
     void removeTask(TaskKind taskKind, int id);
 
-    //    void removeTask(int id);
-//
-//    void removeEpic(int id);
-//
-//    void removeSubTask(int id);
     //  просмотр задач
     Task getTask(int id);
 
