@@ -1,10 +1,12 @@
 package service;
 
-import enums.*;
-import model.*;
+import enums.Status;
+import enums.TaskKind;
+import model.Epic;
+import model.SubTask;
+import model.Task;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 
@@ -93,33 +95,46 @@ public class InMemoryTaskManager implements TaskManager {
     public void clearTasks(TaskKind taskKind) {
         switch (taskKind) {
             case TASK:
-                tasks.clear();
+                clearTasks();
                 break;
             case EPIC:
-                epics.clear();
-                subTasks.clear();
+                clearEpics();
                 break;
             case SUB_TASK:
-                for (Epic epic : epics.values()) {
-                    epic.clearSubTasks();
-                    epic.setStaus(Status.NEW);
-                }
-                subTasks.clear();
+                clearSubTasks();
                 break;
             default:
         }
     }
 
-    public void clearTasks() {
-        clearTasks(TaskKind.TASK);
+    private void clearTasks() {
+        for (int id : tasks.keySet()) {
+            historyManager.remove(id);
+        }
+
+        tasks.clear();
     }
 
-    public void clearEpics() {
-        clearTasks(TaskKind.EPIC);
+    private void clearEpics() {
+        for (int id : epics.keySet()) {
+            historyManager.remove(id);
+        }
+        epics.clear();
+
+        //subTasks.clear();
+        clearSubTasks();
     }
 
-    public void clearSubTasks() {
-        clearTasks(TaskKind.SUB_TASK);
+    private void clearSubTasks() {
+        for (Epic epic : epics.values()) {
+            epic.clearSubTasks();
+            epic.setStaus(Status.NEW);
+        }
+
+        for (int id : subTasks.keySet()) {
+            historyManager.remove(id);
+        }
+        subTasks.clear();
     }
 //    ==============================
 
@@ -159,38 +174,40 @@ public class InMemoryTaskManager implements TaskManager {
 
     //    f. Удаление по идентификатору
 //    ==============================
-    @Override
-    public void removeTask(int id) {
-        removeTask(TaskKind.TASK, id);
+    private void removeTask(int id) {
+        tasks.remove(id);
+        historyManager.remove(id);
     }
 
-    @Override
-    public void removeEpic(int id) {
-        removeTask(TaskKind.EPIC, id);
+    private void removeEpic(int id) {
+        removeSubTasksInEpic(id);
+        epics.remove(id);
+
+        historyManager.remove(id);
     }
 
-    @Override
-    public void removeSubTask(int id) {
-        removeTask(TaskKind.SUB_TASK, id);
+    private void removeSubTask(int id) {
+        SubTask subTask = subTasks.get(id);
+        int epicId = subTask.getEpicId();
+        Epic epic = epics.get(epicId);
+        epic.removeSubTask(id);
+        subTasks.remove(id);
+        calculateStatus(epicId);
+
+        historyManager.remove(id);
     }
 
     @Override
     public void removeTask(TaskKind taskKind, int id) {
         switch (taskKind) {
             case TASK:
-                tasks.remove(id);
+                removeTask(id);
                 break;
             case EPIC:
-                removeSubTasksInEpic(id);
-                epics.remove(id);
+                removeEpic(id);
                 break;
             case SUB_TASK:
-                SubTask subTask = subTasks.get(id);
-                int epicId = subTask.getEpicId();
-                Epic epic = epics.get(epicId);
-                epic.removeSubTask(id);
-                subTasks.remove(id);
-                calculateStatus(epicId);
+                removeSubTask(id);
                 break;
             default:
 
@@ -270,6 +287,7 @@ public class InMemoryTaskManager implements TaskManager {
 
         for (int id : epic.readSubTasks()) {
             subTasks.remove(id);
+            historyManager.remove(id);
         }
         epic.clearSubTasks();
     }

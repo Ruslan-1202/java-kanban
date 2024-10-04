@@ -9,6 +9,8 @@ import service.HistoryManager;
 import service.Managers;
 import service.TaskManager;
 
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @DisplayName("Эпик")
@@ -60,6 +62,38 @@ public class EpicTest {
 
         taskManager.removeTask(TaskKind.SUB_TASK, subTask3.getId());
         assertEquals(epic1.getStaus(), Status.DONE, "Статус закрытого эпика не DONE");
+    }
+
+    @Test
+    @DisplayName("история по эпикам")
+    void historyEpics() {
+        Epic epic1 = new Epic("Epic 1", "Descr Ep 1", 0);
+        epic1 = taskManager.addEpic(epic1);
+
+        int id = epic1.getId();
+
+        SubTask subTask1 = new SubTask("Sub 1", "Descr 1", 0, id);
+        subTask1 = taskManager.addSubTask(subTask1, epic1.getId());
+
+        SubTask subTask2 = new SubTask("Sub 2", "Descr 2");
+        subTask2 = taskManager.addSubTask(subTask2, id);
+
+        taskManager.getEpic(id);
+        List<Task> history = taskManager.getHistory();
+        assertEquals(1, history.size(), "История имеет неправильный размер");
+
+        taskManager.getSubTask(subTask1.getId());
+        history = taskManager.getHistory();
+        assertEquals(2, history.size(), "История имеет неправильный размер");
+
+        taskManager.getSubTask(subTask2.getId());
+        taskManager.removeTask(TaskKind.SUB_TASK, subTask1.getId());
+        history = taskManager.getHistory();
+        assertEquals(2, history.size(), "История имеет неправильный размер");
+
+        taskManager.removeTask(TaskKind.EPIC, id);
+        history = taskManager.getHistory();
+        assertEquals(0, history.size(), "История имеет неправильный размер");
     }
 
     private void assertEqualsEpics(Epic expected, Epic actual, String message) {

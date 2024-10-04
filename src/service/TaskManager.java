@@ -1,14 +1,11 @@
 package service;
 
-import enums.Status;
 import enums.TaskKind;
 import model.Epic;
 import model.SubTask;
 import model.Task;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
 
 public interface TaskManager {
@@ -34,11 +31,6 @@ public interface TaskManager {
     // Удаление одной задачи
     void removeTask(TaskKind taskKind, int id);
 
-    void removeTask(int id);
-
-    void removeEpic(int id);
-
-    void removeSubTask(int id);
     //  просмотр задач
     Task getTask(int id);
 

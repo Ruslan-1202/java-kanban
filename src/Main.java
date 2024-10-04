@@ -1,22 +1,15 @@
-//import java.util.HashMap;
-
 import enums.Status;
 import enums.TaskKind;
 import model.*;
-import service.InMemoryTaskManager;
 import service.Managers;
 import service.TaskManager;
-
-import java.util.*;
 
 public class Main {
 
     public static void main(String[] args) {
         System.out.println("Поехали!");
-        Map<String, Integer> tt = new TreeMap<>();
         //   Данный код для тестирования и примеров вызовов методов
 
-        //InMemoryTaskManager taskManager = new InMemoryTaskManager();
         TaskManager taskManager = Managers.getDefault();
 
         Task task1 = new Task("Task 1", "Descr 1", Status.NEW, 0);
@@ -30,6 +23,15 @@ public class Main {
 
         taskManager.getTask(task1.getId());
         taskManager.getTask(task3.getId());
+        System.out.println("hisTest.getTasks 1" + taskManager.getHistory());
+        taskManager.getTask(task2.getId());
+        System.out.println("hisTest.getTasks 2" + taskManager.getHistory());
+        taskManager.getTask(task3.getId());
+        System.out.println("hisTest.getTasks 3" + taskManager.getHistory());
+        taskManager.getTask(task1.getId());
+        System.out.println("hisTest.getTasks 4" + taskManager.getHistory());
+        taskManager.removeTask(TaskKind.TASK, task1.getId());
+        System.out.println("hisTest.getTasks 5" + taskManager.getHistory());
 
         Epic epic1 = new Epic("Epic 1", "Descr Ep 1", 0);
         epic1 = taskManager.addEpic(epic1);
@@ -69,7 +71,7 @@ public class Main {
         taskManager.updateSubTask(sub1);
 
         for (int i = 0; i < 8; i++) {
-            Task task34 =  taskManager.getEpic(epic2.getId());;
+            Task task34 =  taskManager.getEpic(epic2.getId());
         }
 
         System.out.println("\nЭпики после изменения статусов:");
