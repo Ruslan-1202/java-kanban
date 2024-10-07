@@ -79,7 +79,6 @@ public class InMemoryHistoryManager implements HistoryManager {
         } else {
             tailNode = prev;
         }
-
     }
 
     private static class Node<T> {
