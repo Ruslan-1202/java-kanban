@@ -1,15 +1,17 @@
 package service;
 
 import enums.TaskKind;
-import esceptions.ManagerSaveException;
+import exceptions.ManagerReadException;
+import exceptions.ManagerSaveException;
 import model.Epic;
 import model.SubTask;
 import model.Task;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
+
+import static service.Managers.addTaskFromFile;
+import static service.ParseUtils.fromString;
+import static service.ParseUtils.parseToString;
 
 public class FileBackedTaskManager extends InMemoryTaskManager implements TaskManager {
 
@@ -29,11 +31,10 @@ public class FileBackedTaskManager extends InMemoryTaskManager implements TaskMa
     }
 
     public void putSubTask(SubTask subTask) {
-        Integer epicId = subTask.getEpicId();
-        Integer id = subTask.getId();
+        int id = subTask.getId();
 
         subTasks.put(id, subTask);
-        Epic epic = epics.get(epicId);
+        Epic epic = epics.get(subTask.getEpicId());
         epic.addSubTask(id);
     }
 
@@ -94,30 +95,32 @@ public class FileBackedTaskManager extends InMemoryTaskManager implements TaskMa
             fileWriter.write("id,type,name,status,description,epic\n");
 
             for (Task task : this.readTasks()) {
-                fileWriter.write(toString(task));
+                fileWriter.write(parseToString(task));
             }
 
             for (Epic epic : this.readEpics()) {
-                fileWriter.write(toString(epic));
+                fileWriter.write(parseToString(epic));
             }
 
             for (SubTask subTask : this.readSubTasks()) {
-                fileWriter.write(toString(subTask));
+                fileWriter.write(parseToString(subTask));
             }
         } catch (IOException e) {
             throw new ManagerSaveException();
         }
     }
 
-    private String toString(Task task) {
-        int epicId = 0;
-        TaskKind taskKind = task.getTaskKind();
-
-        if (TaskKind.SUB_TASK.equals(taskKind)) {
-            SubTask subTask = (SubTask) task;
-            epicId = subTask.getEpicId();
+    //Если опять какой-то метод надо будет делать статическим и в другом месте, просьба объяснить,
+    // что именно имеется ввиду
+    public FileBackedTaskManager loadFromFile() throws ManagerReadException {
+        try (BufferedReader br = new BufferedReader(new FileReader(file))) {
+            while (br.ready()) {
+                Task task = fromString(br.readLine());
+                addTaskFromFile(this, task);
+            }
+        } catch (IOException e) {
+            throw new ManagerReadException();
         }
-
-        return String.format("%s,%s,%s,%s,%s,%s\n", task.getId(), taskKind, task.getName(), task.getStaus(), task.getDescr(), epicId);
+        return this;
     }
 }
