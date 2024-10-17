@@ -1,6 +1,7 @@
 package service;
 
 import enums.Status;
+import enums.TaskKind;
 import esceptions.ManagerReadException;
 import model.Epic;
 import model.SubTask;
@@ -20,7 +21,7 @@ public class Managers {
         for (Task task : taskManager.readTasks()) {
             System.out.println(task);
         }
-        taskManager.addTask(new Task("Task6", "Task 6 from file"));
+        taskManager.addTask(new Task("Task7", "Task 7 from file"));
     }
 
     public static TaskManager getDefault() {
@@ -41,7 +42,7 @@ public class Managers {
         try (BufferedReader br = new BufferedReader(new FileReader(file))) {
             while (br.ready()) {
                 Task task = fromString(br.readLine());
-                fileBackedTaskManager.addTaskFromFile(task);
+                addTaskFromFile(fileBackedTaskManager, task);
             }
 
         } catch (IOException e) {
@@ -51,6 +52,8 @@ public class Managers {
     }
 
     private static Task fromString(String value) {
+        if (value.isBlank())
+            return null;
         String[] fields = value.split(",");
         Task task = null;
 
@@ -68,5 +71,24 @@ public class Managers {
         }
 
         return task;
+    }
+
+    public static void addTaskFromFile(FileBackedTaskManager fileBackedTaskManager, Task task) {
+        if (task == null)
+            return;
+
+        TaskKind taskKind = task.getTaskKind();
+
+        switch (taskKind) {
+            case TASK -> fileBackedTaskManager.putTask(task);
+            case EPIC -> fileBackedTaskManager.putEpic((Epic) task);
+            case SUB_TASK -> fileBackedTaskManager.putSubTask((SubTask) task);
+            case null, default -> {
+                return;
+            }
+        }
+
+        if (fileBackedTaskManager.getCounterId() < task.getId())
+            fileBackedTaskManager.setCounterId(task.getId());
     }
 }

@@ -1,6 +1,7 @@
 package model;
 
-import enums.*;
+import enums.Status;
+import enums.TaskKind;
 
 public class SubTask extends Task {
 
@@ -30,6 +31,11 @@ public class SubTask extends Task {
 
     public int getEpicId() {
         return epicId;
+    }
+
+    @Override
+    public TaskKind getTaskKind() {
+        return TaskKind.SUB_TASK;
     }
 
     @Override

@@ -1,6 +1,7 @@
 package model;
 
-import enums.*;
+import enums.Status;
+import enums.TaskKind;
 
 public class Task {
 
@@ -50,6 +51,10 @@ public class Task {
 
     public void setDescr(String descr) {
         this.descr = descr;
+    }
+
+    public TaskKind getTaskKind() {
+        return TaskKind.TASK;
     }
 
     @Override

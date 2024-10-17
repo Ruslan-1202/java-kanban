@@ -6,13 +6,18 @@ import model.Task;
 import service.Managers;
 import service.TaskManager;
 
+import java.io.File;
+
 public class Main {
 
     public static void main(String[] args) {
         System.out.println("Поехали!");
         //   Данный код для тестирования и примеров вызовов методов
 
-        TaskManager taskManager = Managers.getDefault();
+        // TaskManager taskManager = Managers.getDefault();
+        File file = new File("task_manager.csv");
+
+        TaskManager taskManager = Managers.getDefault(file);
 
         Task task1 = new Task("Task 1", "Descr 1", Status.NEW, 0);
         task1 = taskManager.addTask(task1);

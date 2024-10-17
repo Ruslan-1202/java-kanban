@@ -20,6 +20,23 @@ public class FileBackedTaskManager extends InMemoryTaskManager implements TaskMa
         this.file = file;
     }
 
+    public void putTask(Task task) {
+        tasks.put(task.getId(), task);
+    }
+
+    public void putEpic(Epic epic) {
+        epics.put(epic.getId(), epic);
+    }
+
+    public void putSubTask(SubTask subTask) {
+        Integer epicId = subTask.getEpicId();
+        Integer id = subTask.getId();
+
+        subTasks.put(id, subTask);
+        Epic epic = epics.get(epicId);
+        epic.addSubTask(id);
+    }
+
     @Override
     public Task addTask(Task task) {
         Task retTask = super.addTask(task);
@@ -71,27 +88,6 @@ public class FileBackedTaskManager extends InMemoryTaskManager implements TaskMa
         save();
     }
 
-    public void addTaskFromFile(Task task) {
-        TaskKind kind = getType(task);
-
-        switch (kind) {
-            case TASK -> tasks.put(task.getId(), task);
-            case EPIC -> epics.put(task.getId(), (Epic) task);
-            case SUB_TASK -> {
-                SubTask subTask = (SubTask) task;
-                subTasks.put(subTask.getId(), subTask);
-                Epic epic = epics.get(subTask.getEpicId());
-                epic.addSubTask(subTask.getId());
-            }
-            case null, default -> {
-                return;
-            }
-        }
-
-        if (getCounterId() < task.getId())
-            setCounterId(task.getId());
-    }
-
     private void save() throws ManagerSaveException {
 
         try (BufferedWriter fileWriter = new BufferedWriter(new FileWriter(this.file, false))) {
@@ -115,7 +111,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager implements TaskMa
 
     private String toString(Task task) {
         int epicId = 0;
-        TaskKind taskKind = getType(task);
+        TaskKind taskKind = task.getTaskKind();
 
         if (TaskKind.SUB_TASK.equals(taskKind)) {
             SubTask subTask = (SubTask) task;
@@ -123,18 +119,5 @@ public class FileBackedTaskManager extends InMemoryTaskManager implements TaskMa
         }
 
         return String.format("%s,%s,%s,%s,%s,%s\n", task.getId(), taskKind, task.getName(), task.getStaus(), task.getDescr(), epicId);
-    }
-
-    private TaskKind getType(Task task) {
-        TaskKind taskKind = null;
-
-        if (task instanceof SubTask)
-            taskKind = TaskKind.SUB_TASK;
-        else if (task instanceof Epic)
-            taskKind = TaskKind.EPIC;
-        else if (task != null)
-            taskKind = TaskKind.TASK;
-
-        return taskKind;
     }
 }

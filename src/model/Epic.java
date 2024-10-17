@@ -1,12 +1,13 @@
 package model;
 
-import enums.*;
+import enums.Status;
+import enums.TaskKind;
 
 import java.util.ArrayList;
 
 public class Epic extends Task {
 
-    private ArrayList<Integer> subTasks; //плоская модель
+    private final ArrayList<Integer> subTasks; //плоская модель
     //private ArrayList<SubTask> subTasks; //объектная модель
 
     public Epic(String name, String descr, Status status, int id) {
@@ -32,5 +33,10 @@ public class Epic extends Task {
 
     public void removeSubTask(int id) {
         subTasks.remove(Integer.valueOf(id));
+    }
+
+    @Override
+    public TaskKind getTaskKind() {
+        return TaskKind.EPIC;
     }
 }
