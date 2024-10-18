@@ -14,11 +14,11 @@ public class InMemoryTaskManager implements TaskManager {
 
     private int counterId;
 
-    private HashMap<Integer, Task> tasks;
-    private HashMap<Integer, Epic> epics;
-    private HashMap<Integer, SubTask> subTasks;
+    protected HashMap<Integer, Task> tasks;
+    protected HashMap<Integer, Epic> epics;
+    protected HashMap<Integer, SubTask> subTasks;
 
-    private HistoryManager historyManager;
+    private final HistoryManager historyManager;
 
     public InMemoryTaskManager(HistoryManager historyManager) { //надо вот так
         this.historyManager = historyManager;
@@ -336,5 +336,13 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public List<Task> getHistory() {
         return historyManager.getHistory();
+    }
+
+    protected int getCounterId() {
+        return counterId;
+    }
+
+    protected void setCounterId(int counterId) {
+        this.counterId = counterId;
     }
 }
