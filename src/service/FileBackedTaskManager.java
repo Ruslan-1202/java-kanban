@@ -9,11 +9,11 @@ import model.Task;
 
 import java.io.*;
 
-import static service.Managers.addTaskFromFile;
+import static service.Managers.getDefaultHistory;
 import static service.ParseUtils.fromString;
 import static service.ParseUtils.parseToString;
 
-public class FileBackedTaskManager extends InMemoryTaskManager implements TaskManager {
+public class FileBackedTaskManager extends InMemoryTaskManager {
 
     private final File file;
 
@@ -89,6 +89,27 @@ public class FileBackedTaskManager extends InMemoryTaskManager implements TaskMa
         save();
     }
 
+    private void addTaskFromFile(Task task) {
+        if (task == null) {
+            return;
+        }
+
+        TaskKind taskKind = task.getTaskKind();
+
+        switch (taskKind) {
+            case TASK -> putTask(task);
+            case EPIC -> putEpic((Epic) task);
+            case SUB_TASK -> putSubTask((SubTask) task);
+            case null, default -> {
+                return;
+            }
+        }
+
+        if (getCounterId() < task.getId()) {
+            setCounterId(task.getId());
+        }
+    }
+
     private void save() throws ManagerSaveException {
 
         try (BufferedWriter fileWriter = new BufferedWriter(new FileWriter(this.file, false))) {
@@ -110,17 +131,20 @@ public class FileBackedTaskManager extends InMemoryTaskManager implements TaskMa
         }
     }
 
-    //Если опять какой-то метод надо будет делать статическим и в другом месте, просьба объяснить,
-    // что именно имеется ввиду
-    public FileBackedTaskManager loadFromFile() throws ManagerReadException {
+    private void loadFromFile() throws ManagerReadException {
         try (BufferedReader br = new BufferedReader(new FileReader(file))) {
             while (br.ready()) {
                 Task task = fromString(br.readLine());
-                addTaskFromFile(this, task);
+                addTaskFromFile(task);
             }
         } catch (IOException e) {
             throw new ManagerReadException();
         }
-        return this;
+    }
+
+    public static FileBackedTaskManager loadFromFile(File file) throws ManagerReadException {
+        FileBackedTaskManager fileBackedTaskManager = new FileBackedTaskManager(getDefaultHistory(), file);
+        fileBackedTaskManager.loadFromFile();
+        return fileBackedTaskManager;
     }
 }

@@ -1,8 +1,5 @@
 package service;
 
-import enums.TaskKind;
-import model.Epic;
-import model.SubTask;
 import model.Task;
 
 import java.io.File;
@@ -28,28 +25,6 @@ public class Managers {
     }
 
     public static TaskManager getDefault(File file) {
-        FileBackedTaskManager fileBackedTaskManager = new FileBackedTaskManager(getDefaultHistory(), file);
-        return fileBackedTaskManager.loadFromFile();
-    }
-
-    public static void addTaskFromFile(FileBackedTaskManager fileBackedTaskManager, Task task) {
-        if (task == null) {
-            return;
-        }
-
-        TaskKind taskKind = task.getTaskKind();
-
-        switch (taskKind) {
-            case TASK -> fileBackedTaskManager.putTask(task);
-            case EPIC -> fileBackedTaskManager.putEpic((Epic) task);
-            case SUB_TASK -> fileBackedTaskManager.putSubTask((SubTask) task);
-            case null, default -> {
-                return;
-            }
-        }
-
-        if (fileBackedTaskManager.getCounterId() < task.getId()) {
-            fileBackedTaskManager.setCounterId(task.getId());
-        }
+        return FileBackedTaskManager.loadFromFile(file);
     }
 }
