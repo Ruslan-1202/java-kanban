@@ -9,6 +9,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
+import java.util.TreeSet;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -25,6 +26,8 @@ public class InMemoryTaskManagerTest {
     @BeforeEach
     void clear() {
         taskManager.clearTasks(TaskKind.TASK);
+        taskManager.clearTasks(TaskKind.EPIC);
+        taskManager.clearTasks(TaskKind.SUB_TASK);
     }
 
     @Test
@@ -44,11 +47,60 @@ public class InMemoryTaskManagerTest {
 
         for (int i = 1; i <= COUNT_TASKS; i++) {
             taskManager.addTask(new Task("Task " + i, "Descr task " + i));
+            sleepTask();
         }
 
         List<Task> tasks = taskManager.readTasks();
         assertEquals(COUNT_TASKS, tasks.size(), "Возвращается неправильное количество задач");
-//        assertEquals(Status.NEW, task1.getStaus(), "Не совпадают статус новой задачи");
     }
-    
+
+    private void sleepTask() {
+        try {
+            Thread.sleep(100);
+        } catch (InterruptedException e) {
+
+        }
+    }
+
+    @Test
+    @DisplayName("Обновление задачи")
+    void updateTask() {
+        int id = 1;
+        for (int i = 0; i < 2; i++) {
+            taskManager.addTask(new Task("Task " + i, "Descr task " + i));
+            sleepTask();
+        }
+
+        Task updTask = taskManager.getTask(id);
+        updTask.setStartTime(updTask.getStartTime().plusMinutes(10));
+        taskManager.updateTask(updTask);
+
+        assertEqualsTasks(updTask, taskManager.getTask(updTask.getId()), "Не совпадают задачи");
+    }
+
+    @Test
+    @DisplayName("Проверка приоритезатора")
+    void prioritizedTasks() {
+        int id = 1;
+        for (int i = 0; i < 3; i++) {
+            taskManager.addTask(new Task("Task " + i, "Descr task " + i));
+            sleepTask();
+        }
+
+        TreeSet<Task> treeSetBefore = taskManager.getPrioritizedTasks();
+
+        Task updTask = taskManager.getTask(id);
+        updTask.setStartTime(updTask.getStartTime().plusMinutes(10));
+        taskManager.updateTask(updTask);
+
+        TreeSet<Task> treeSetAfter = taskManager.getPrioritizedTasks();
+
+    }
+
+    private void assertEqualsTasks(Task expected, Task actual, String message) {
+        assertEquals(expected.getId(), actual.getId(), message + ", id");
+        assertEquals(expected.getName(), actual.getName(), message + ", name");
+        assertEquals(expected.getDescr(), actual.getDescr(), message + ", descr");
+        assertEquals(expected.getStartTime(), actual.getStartTime(), message + ", getStartTime");
+    }
 }
