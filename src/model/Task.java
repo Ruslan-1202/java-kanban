@@ -3,18 +3,32 @@ package model;
 import enums.Status;
 import enums.TaskKind;
 
-public class Task {
+import java.time.Duration;
+import java.time.LocalDateTime;
 
-    private String name;
-    private String descr;
+public class Task {
+    //считаем по умолчанию продолжительность задачи 30 минут
+    protected static final int DEFAULT_DURATION_IN_MINUTES = 30;
+
+    protected String name;
+    protected String descr;
     protected int id;
     protected Status status;
 
-    public Task(String name, String descr, Status status, int id) {
+    protected LocalDateTime startTime;
+    protected Duration duration;
+
+    public Task(String name, String descr, int id, Status status, LocalDateTime startTime, Duration duration) {
         this.name = name;
-        this.status = status;
-        this.id = id;
         this.descr = descr;
+        this.id = id;
+        this.status = status;
+        this.duration = duration;
+        this.startTime = startTime;
+    }
+
+    public Task(String name, String descr, Status status, int id) {
+        this(name, descr, id, status, LocalDateTime.now(), Duration.ofMinutes(DEFAULT_DURATION_IN_MINUTES));
     }
 
     public Task(String name, String descr) {
@@ -55,6 +69,30 @@ public class Task {
 
     public TaskKind getTaskKind() {
         return TaskKind.TASK;
+    }
+
+    public LocalDateTime getEndTime() {
+        return startTime.plus(duration);
+    }
+
+    public Duration getDuration() {
+        return duration;
+    }
+
+    public void setDuration(Duration duration) {
+        this.duration = duration;
+    }
+
+    public LocalDateTime getStartTime() {
+        return startTime;
+    }
+
+    public void setStartTime(LocalDateTime startTime) {
+        this.startTime = startTime;
+    }
+
+    public int getEpicId() {
+        return 0;
     }
 
     @Override

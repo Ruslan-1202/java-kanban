@@ -2,13 +2,13 @@ package service;
 
 import enums.Status;
 import enums.TaskKind;
+import exceptions.NoSuchEpicExists;
 import model.Epic;
 import model.SubTask;
 import model.Task;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.time.Duration;
+import java.util.*;
 
 public class InMemoryTaskManager implements TaskManager {
 
@@ -18,6 +18,8 @@ public class InMemoryTaskManager implements TaskManager {
     protected HashMap<Integer, Epic> epics;
     protected HashMap<Integer, SubTask> subTasks;
 
+    protected TreeSet<Task> prioritizedTasks;
+
     private final HistoryManager historyManager;
 
     public InMemoryTaskManager(HistoryManager historyManager) { //надо вот так
@@ -25,12 +27,16 @@ public class InMemoryTaskManager implements TaskManager {
         tasks = new HashMap<>();
         epics = new HashMap<>();
         subTasks = new HashMap<>();
+        prioritizedTasks = new TreeSet<>(new CompareDate());
     }
 
     private int getNewId() {
         return ++counterId;
     }
 
+    public TreeSet<Task> getPrioritizedTasks() {
+        return prioritizedTasks;
+    }
     //  Создание новой задачи
 //    ==============================
     @Override
@@ -38,6 +44,7 @@ public class InMemoryTaskManager implements TaskManager {
         if (task == null) {
             return null;
         }
+
         int id = getNewId();
         task.setId(id);
         tasks.put(id, task);
@@ -68,6 +75,7 @@ public class InMemoryTaskManager implements TaskManager {
         subTasks.put(id, subTask);
         epic.addSubTask(id);
         calculateStatus(idEpic);
+        calculateTimes(subTask);
         return subTask;
     }
 //    ==============================
@@ -121,7 +129,6 @@ public class InMemoryTaskManager implements TaskManager {
         }
         epics.clear();
 
-        //subTasks.clear();
         clearSubTasks();
     }
 
@@ -129,6 +136,9 @@ public class InMemoryTaskManager implements TaskManager {
         for (Epic epic : epics.values()) {
             epic.clearSubTasks();
             epic.setStaus(Status.NEW);
+            epic.setStartTime(null);
+            epic.setEndTime(null);
+            epic.setDuration(null);
         }
 
         for (int id : subTasks.keySet()) {
@@ -193,7 +203,7 @@ public class InMemoryTaskManager implements TaskManager {
         epic.removeSubTask(id);
         subTasks.remove(id);
         calculateStatus(epicId);
-
+        calculateTimes(subTask);
         historyManager.remove(id);
     }
 
@@ -254,6 +264,7 @@ public class InMemoryTaskManager implements TaskManager {
         }
         subTasks.put(id, subTask);
         calculateStatus(subTask.getEpicId());
+        calculateTimes(subTask);
     }
 //    ==============================
 
@@ -290,6 +301,29 @@ public class InMemoryTaskManager implements TaskManager {
             historyManager.remove(id);
         }
         epic.clearSubTasks();
+    }
+
+    private void calculateTimes(SubTask subTask) {
+        int idEpic = subTask.getEpicId();
+
+        Epic epic = getEpic(idEpic);
+        if (epic == null) {
+            throw new NoSuchEpicExists("Такого эпика нет: " + idEpic);
+        }
+        //продолжительность эпика - сумма всех сабов
+        long tasksDuration = epic.readSubTasks().stream()
+                .mapToLong(a -> (getSubTask(a).getDuration().toMinutes()))
+                .sum();
+
+        epic.setDuration(Duration.ofMinutes(tasksDuration));
+        //время начала - самое раннее время
+        if (epic.getStartTime().isAfter(subTask.getStartTime())) {
+            epic.setStartTime(subTask.getStartTime());
+        }
+        //время окончания - самое позднее время
+        if (epic.getEndTime().isBefore(subTask.getEndTime())) {
+            epic.setEndTime(subTask.getEndTime());
+        }
     }
 
     private void calculateStatus(int epicId) {
@@ -344,5 +378,17 @@ public class InMemoryTaskManager implements TaskManager {
 
     protected void setCounterId(int counterId) {
         this.counterId = counterId;
+    }
+}
+
+class CompareDate implements Comparator<Task> {
+    @Override
+    public int compare(Task o1, Task o2) {
+        if (o1.getStartTime().isBefore(o2.getStartTime())) {
+            return -1;
+        } else if (o1.getStartTime().isAfter(o2.getStartTime())) {
+            return 1;
+        }
+        return 0;
     }
 }
