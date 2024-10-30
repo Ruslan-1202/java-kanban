@@ -1,5 +1,6 @@
 package service;
 
+import exceptions.ManagerReadException;
 import model.Task;
 
 import java.io.File;
@@ -24,7 +25,7 @@ public class Managers {
         return new InMemoryHistoryManager();
     }
 
-    public static TaskManager getDefault(File file) {
+    public static TaskManager getDefault(File file) throws ManagerReadException {
         return FileBackedTaskManager.loadFromFile(file);
     }
 }
