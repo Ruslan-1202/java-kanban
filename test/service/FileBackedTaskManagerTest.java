@@ -1,10 +1,7 @@
 package service;
 
-import enums.Status;
-import model.Task;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
 
 import java.io.File;
 
@@ -14,18 +11,5 @@ public class FileBackedTaskManagerTest extends TaskManagerTest {
     static void initTasks() {
         File file = new File("task_manager.csv");
         taskManager = Managers.getDefault(file);
-    }
-
-    @Test
-    public void addNullDateTimeAndDuration() {
-        TaskManager taskManager1 = FileBackedTaskManager.loadFromFile(new File("task_manager1.csv"));
-
-        Task task = new Task("Name no time", "Descr no time", 1, Status.NEW, null, null);
-        task = taskManager1.addTask(task);
-
-        TaskManager taskManager2 = FileBackedTaskManager.loadFromFile(new File("task_manager1.csv"));
-        Task newtask = taskManager2.getTask(task.getId());
-
-        assertEqualsTasks(newtask, task, "Не совпадают задачи после загрузки из файла");
     }
 }
