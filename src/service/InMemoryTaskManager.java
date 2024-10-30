@@ -33,6 +33,18 @@ public class InMemoryTaskManager implements TaskManager {
         return ++counterId;
     }
 
+    class CompareDate implements Comparator<Task> {
+        @Override
+        public int compare(Task o1, Task o2) {
+            if (o1.getStartTime().isBefore(o2.getStartTime())) {
+                return -1;
+            } else if (o1.getStartTime().isAfter(o2.getStartTime())) {
+                return 1;
+            }
+            return 0;
+        }
+    }
+
     @Override
     public TreeSet<Task> getPrioritizedTasks() {
         return new TreeSet<>(prioritizedTasks);
@@ -426,17 +438,5 @@ public class InMemoryTaskManager implements TaskManager {
 
     protected void setCounterId(int counterId) {
         this.counterId = counterId;
-    }
-}
-
-class CompareDate implements Comparator<Task> {
-    @Override
-    public int compare(Task o1, Task o2) {
-        if (o1.getStartTime().isBefore(o2.getStartTime())) {
-            return -1;
-        } else if (o1.getStartTime().isAfter(o2.getStartTime())) {
-            return 1;
-        }
-        return 0;
     }
 }
