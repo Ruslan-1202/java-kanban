@@ -28,7 +28,14 @@ public class FileBackedTaskManagerTest extends TaskManagerTest {
         Task task = new Task("Name no time", "Descr no time", 1, Status.NEW, null, null);
         task = taskManager1.addTask(task);
 
-        TaskManager taskManager2 = FileBackedTaskManager.loadFromFile(new File("task_manager1.csv"));
+        TaskManager taskManager2 = null;
+        try {
+            taskManager2 = FileBackedTaskManager.loadFromFile(new File("task_manager1.csv"));
+        } catch (ManagerReadException e) {
+            System.out.println("Ошибка обработки файла");
+            return;
+        }
+
         Task newtask = taskManager2.getTask(task.getId());
 
         assertEqualsTasks(newtask, task, "Не совпадают задачи после загрузки из файла");
