@@ -19,7 +19,7 @@ public class Epic extends Task {
     }
 
     public Epic(String name, String descr, Status status, int id) {
-        this(name, descr, id, status, LocalDateTime.now(), Duration.ofMinutes(DEFAULT_DURATION_IN_MINUTES));
+        this(name, descr, id, status, null, null);
     }
 
     public Epic(String name, String descr, int id) {

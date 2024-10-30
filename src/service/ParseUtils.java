@@ -11,7 +11,7 @@ import java.time.format.DateTimeFormatter;
 
 public class ParseUtils {
 
-    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("dd.MM.yyyy, HH:mm");
+    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
 
     public static Task fromString(String value) {
         if (value.isBlank()) {
@@ -36,15 +36,36 @@ public class ParseUtils {
                 return null;
         }
 
-        if (!fields[7].equals("null")) {
-            task.setStartTime(LocalDateTime.parse(fields[7], FORMATTER));
+        if (!fields[6].equals("null")) {
+            task.setStartTime(LocalDateTime.parse(fields[6], FORMATTER));
+        } else {
+            task.setStartTime(null);
         }
-        task.setDuration(Duration.ofMinutes(Integer.parseInt(fields[0])));
+
+        if (!fields[7].equals("null")) {
+            task.setDuration(Duration.ofMinutes(Integer.parseInt(fields[7])));
+        } else {
+            task.setDuration(null);
+        }
 
         return task;
     }
 
     public static String parseToString(Task task) {
-        return String.format("%s,%s,%s,%s,%s,%s,%s,%s\n", task.getId(), task.getTaskKind(), task.getName(), task.getStaus(), task.getDescr(), task.getEpicId(), task.getStartTime().format(FORMATTER), task.getDuration().toMinutes());
+        String dateTime, duration;
+
+        if (task.getStartTime() == null) {
+            dateTime = "null";
+        } else {
+            dateTime = task.getStartTime().format(FORMATTER);
+        }
+
+        if (task.getDuration() == null) {
+            duration = "null";
+        } else {
+            duration = String.valueOf(task.getDuration().toMinutes());
+        }
+
+        return String.format("%s,%s,%s,%s,%s,%s,%s,%s\n", task.getId(), task.getTaskKind(), task.getName(), task.getStaus(), task.getDescr(), task.getEpicId(), dateTime, duration);
     }
 }

@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 import service.HistoryManager;
 import service.Managers;
 import service.TaskManager;
+import service.TestUtils;
 
 import java.util.List;
 
@@ -53,19 +54,15 @@ class TestTasks {
 
         assertNotNull(tasks, "Задачи не возвращаются.");
         assertEquals(1, tasks.size(), "Неверное количество задач.");
-        assertEquals(task, tasks.get(task.getId()), "Задачи не совпадают.");
+        assertEquals(task, tasks.getFirst(), "Задачи не совпадают.");
 
     }
 
     @Test
     void removeTasks() {
         Task task = new Task("Test removeTasks", "Test removeTasks description");
-        taskManager.addTask(task);
-        try {
-            Thread.sleep(100);
-        } catch (InterruptedException e) {
+        TestUtils.sleepTask();
 
-        }
         Task task2 = new Task("Test removeTasks2", "Test removeTasks2 description");
         taskManager.addTask(task2);
 
