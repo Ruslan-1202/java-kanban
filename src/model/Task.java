@@ -7,7 +7,7 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 
 public class Task {
-    //считаем по умолчанию продолжительность задачи 30 минут
+    //считаем по умолчанию продолжительность задачи 0 минут
     protected static final int DEFAULT_DURATION_IN_MINUTES = 0;
 
     protected String name;

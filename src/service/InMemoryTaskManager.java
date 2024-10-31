@@ -33,7 +33,7 @@ public class InMemoryTaskManager implements TaskManager {
         return ++counterId;
     }
 
-    class CompareDate implements Comparator<Task> {
+    private class CompareDate implements Comparator<Task> {
         @Override
         public int compare(Task o1, Task o2) {
             if (o1.getStartTime().isBefore(o2.getStartTime())) {
