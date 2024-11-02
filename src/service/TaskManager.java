@@ -7,16 +7,23 @@ import model.Task;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.TreeSet;
 
 public interface TaskManager {
+    //Добавление задач
+//    =========================
     Task addTask(Task task);
 
     Epic addEpic(Epic epic);
 
     SubTask addSubTask(SubTask subTask, int idEpic);
+//===============================
 
+    //получение упорядоченного списка
+    TreeSet<Task> getPrioritizedTasks();
     //    Получение списка всех задач
 //    ==============================
+
     List<Task> readTasks();
 
     List<Epic> readEpics();

@@ -3,14 +3,21 @@ package model;
 import enums.Status;
 import enums.TaskKind;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
+
 public class SubTask extends Task {
 
     private int epicId; //плоская модель
 //    private Epic epic; // объектная модель
 
-    public SubTask(String name, String descr, Status status, int id, int epicId) {
-        super(name, descr, status, id);
+    public SubTask(String name, String descr, int id, Status status, LocalDateTime startTime, Duration duration, int epicId) {
+        super(name, descr, id, status, startTime, duration);
         this.epicId = epicId;
+    }
+
+    public SubTask(String name, String descr, Status status, int id, int epicId) {
+        this(name, descr, id, status, LocalDateTime.now(), Duration.ofMinutes(DEFAULT_DURATION_IN_MINUTES), epicId);
     }
 
     public SubTask(String name, String descr, int id, int epicId) {
@@ -29,6 +36,7 @@ public class SubTask extends Task {
         this.epicId = epicId;
     }
 
+    @Override
     public int getEpicId() {
         return epicId;
     }

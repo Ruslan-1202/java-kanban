@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 import service.HistoryManager;
 import service.Managers;
 import service.TaskManager;
+import service.TestUtils;
 
 import java.util.List;
 
@@ -53,18 +54,23 @@ class TestTasks {
 
         assertNotNull(tasks, "Задачи не возвращаются.");
         assertEquals(1, tasks.size(), "Неверное количество задач.");
-        assertEquals(task, tasks.get(0), "Задачи не совпадают.");
+        assertEquals(task, tasks.getFirst(), "Задачи не совпадают.");
 
     }
 
     @Test
     void removeTasks() {
+        Task task = new Task("Test removeTasks", "Test removeTasks description");
+        TestUtils.sleepTask();
+
+        Task task2 = new Task("Test removeTasks2", "Test removeTasks2 description");
+        taskManager.addTask(task2);
+
         taskManager.clearTasks(TaskKind.TASK);
         List<Task> tasks = taskManager.readTasks();
 
         assertEquals(0, tasks.size(), "При очистке задач список не пуст");
 
-        Task task = new Task("Test removeTasks", "Test removeTasks description");
         taskManager.addTask(task);
         taskManager.removeTask(TaskKind.TASK, task.getId());
         tasks = taskManager.readTasks();
@@ -72,7 +78,7 @@ class TestTasks {
         assertEquals(0, tasks.size(), "При удалении единственной задачи список не пуст");
 
         taskManager.addTask(task);
-        Task task2 = new Task("Test removeTasks2", "Test removeTasks2 description");
+
         taskManager.addTask(task2);
         taskManager.removeTask(TaskKind.TASK, task.getId());
         tasks = taskManager.readTasks();
