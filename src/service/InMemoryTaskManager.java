@@ -2,6 +2,7 @@ package service;
 
 import enums.Status;
 import enums.TaskKind;
+import exceptions.TaskNotFoundException;
 import model.Epic;
 import model.SubTask;
 import model.Task;
@@ -200,7 +201,7 @@ public class InMemoryTaskManager implements TaskManager {
 //    ==============================
 
     //    c. Получение по идентификатору.
-    private Task getTask(TaskKind taskKind, int id) {
+    private Task getTask(TaskKind taskKind, int id) throws TaskNotFoundException {
         Task task = null;
         if (TaskKind.SUB_TASK.equals(taskKind)) {
             task = subTasks.get(id);
@@ -212,11 +213,15 @@ public class InMemoryTaskManager implements TaskManager {
         if (task != null) {
             historyManager.add(task);
         }
+
+        if (task == null) {
+            throw new TaskNotFoundException("Нет задачи с типом " + taskKind.name() + ", id = " + id);
+        }
         return task;
     }
 
     @Override
-    public Task getTask(int id) {
+    public Task getTask(int id) throws TaskNotFoundException {
         return getTask(TaskKind.TASK, id);
     }
 

@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 import service.HistoryManager;
 import service.Managers;
 import service.TaskManager;
-import service.TestUtils;
+import utils.TestUtils;
 
 import java.util.List;
 
