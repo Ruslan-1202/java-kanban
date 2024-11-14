@@ -24,8 +24,8 @@ import java.util.TreeSet;
 
 public class BaseHttpHandler {
 
-    protected final static int CODE_WRONG_ID = 500;
-    protected final static int CODE_SERVER_ERROR = 500;
+    protected static final int CODE_WRONG_ID = 500;
+    protected static final int CODE_SERVER_ERROR = 500;
 
     protected static final Charset DEFAULT_CHARSET = StandardCharsets.UTF_8;
 
