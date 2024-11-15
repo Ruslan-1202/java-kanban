@@ -69,7 +69,7 @@ public class HttpTaskServer {
     }
 
     private void createContexts() {
-//        /tasks, /subtasks, /epics, /history и /prioritized
+//        /TASKS, /subtasks, /EPICS, /history и /prioritized
 
         httpServer.createContext("/tasks", new TaskHandler(taskManager));
         httpServer.createContext("/epics", new EpicHandler(taskManager));
@@ -80,7 +80,7 @@ public class HttpTaskServer {
     }
 
 
-    static class LocalDateTimeTypeAdapter extends TypeAdapter<LocalDateTime> {
+    private static class LocalDateTimeTypeAdapter extends TypeAdapter<LocalDateTime> {
         private final DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
         @Override
@@ -103,7 +103,7 @@ public class HttpTaskServer {
         }
     }
 
-    static class DurationTypeAdapter extends TypeAdapter<Duration> {
+    private static class DurationTypeAdapter extends TypeAdapter<Duration> {
         @Override
         public void write(JsonWriter jsonWriter, Duration duration) throws IOException {
             if (duration == null) {

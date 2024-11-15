@@ -11,7 +11,7 @@ import java.io.IOException;
 public class TaskHandler extends BaseHttpHandler implements HttpHandler {
 
     public TaskHandler(TaskManager taskManager) {
-        super(taskManager, TaskKind.TASK, Url.tasks);
+        super(taskManager, TaskKind.TASK, Url.TASKS);
     }
 
     @Override

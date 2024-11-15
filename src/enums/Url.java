@@ -1,9 +1,9 @@
 package enums;
 
 public enum Url {
-    tasks,
-    epics,
-    subtasks,
-    history,
-    prioritized
+    TASKS,
+    EPICS,
+    SUBTASKS,
+    HISTORY,
+    PRIORITIZED
 }

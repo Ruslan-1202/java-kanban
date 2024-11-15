@@ -11,7 +11,7 @@ import java.io.IOException;
 public class EpicHandler extends BaseHttpHandler implements HttpHandler {
 
     public EpicHandler(TaskManager taskManager) {
-        super(taskManager, TaskKind.EPIC, Url.epics);
+        super(taskManager, TaskKind.EPIC, Url.EPICS);
     }
 
     @Override

@@ -240,13 +240,13 @@ public class BaseHttpHandler {
             if (requestMethod.equals("GET")) {
                 Url url = Url.valueOf(pathParts[1]);
                 switch (url) {
-                    case tasks, epics, subtasks:
+                    case TASKS, EPICS, SUBTASKS:
                         if (url == this.url) {
                             return Endpoint.GET_TASKS;
                         }
-                    case history:
+                    case HISTORY:
                         return Endpoint.GET_HISTORY;
-                    case prioritized:
+                    case PRIORITIZED:
                         return Endpoint.GET_PRIORITIZED;
                 }
             } else if (requestMethod.equals("POST")) {
@@ -254,7 +254,7 @@ public class BaseHttpHandler {
             }
         }
 
-        if (pathParts.length == 3 && url.equals(Url.valueOf(pathParts[1]))) {
+        if (pathParts.length == 3 && url.equals(Url.valueOf(pathParts[1].toUpperCase()))) {
             switch (requestMethod) {
                 case "GET":
                     return Endpoint.GET_ONE_TASK;
@@ -268,7 +268,7 @@ public class BaseHttpHandler {
         if (pathParts.length == 4
                 && pathParts[1].equals("epics")
                 && pathParts[3].equals("subtasks")
-                && url.equals(Url.epics)) {
+                && url.equals(Url.EPICS)) {
             return Endpoint.GET_EPIC_SUBTASKS;
         }
 
@@ -315,20 +315,4 @@ public class BaseHttpHandler {
 
         writeResponse(exchange, response, rCode);
     }
-
-//    protected void sendNotFound(HttpExchange exchange, String text) {
-//        byte[] resp = text.getBytes(StandardCharsets.UTF_8);
-//        exchange.getResponseHeaders().add("Content-Type", "application/json;charset=utf-8");
-//        exchange.sendResponseHeaders(404, resp.length);
-//        exchange.getResponseBody().write(resp);
-//        exchange.close();
-//    }
-//
-//    protected void sendHasInteractions(HttpExchange exchange, String text) {
-//        byte[] resp = text.getBytes(StandardCharsets.UTF_8);
-//        exchange.getResponseHeaders().add("Content-Type", "application/json;charset=utf-8");
-//        exchange.sendResponseHeaders(404, resp.length);
-//        exchange.getResponseBody().write(resp);
-//        exchange.close();
-//    }
 }

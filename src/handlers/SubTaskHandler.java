@@ -11,7 +11,7 @@ import java.io.IOException;
 public class SubTaskHandler extends BaseHttpHandler implements HttpHandler {
 
     public SubTaskHandler(TaskManager taskManager) {
-        super(taskManager, TaskKind.SUB_TASK, Url.subtasks);
+        super(taskManager, TaskKind.SUB_TASK, Url.SUBTASKS);
     }
 
     @Override
