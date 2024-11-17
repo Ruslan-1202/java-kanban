@@ -10,8 +10,8 @@ import model.Task;
 import java.io.*;
 
 import static service.Managers.getDefaultHistory;
-import static service.ParseUtils.fromString;
-import static service.ParseUtils.parseToString;
+import static utils.ParseUtils.fromString;
+import static utils.ParseUtils.parseToString;
 
 public class FileBackedTaskManager extends InMemoryTaskManager {
 
@@ -66,7 +66,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     }
 
     @Override
-    public void removeTask(TaskKind taskKind, int id) {
+    public void removeTask(TaskKind taskKind, int id) throws ManagerSaveException {
         super.removeTask(taskKind, id);
         save();
     }
@@ -127,7 +127,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                 fileWriter.write(parseToString(subTask));
             }
         } catch (IOException e) {
-            throw new ManagerSaveException();
+            throw new ManagerSaveException("Ошибка при сохранении в файл", e);
         }
     }
 

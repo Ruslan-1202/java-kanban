@@ -1,4 +1,4 @@
-package service;
+package utils;
 
 public class TestUtils {
     //задержка, чтобы создавались задачи без явного задания времени
