@@ -3,20 +3,25 @@ package service;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.TypeAdapter;
+import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonToken;
 import com.google.gson.stream.JsonWriter;
 import com.sun.net.httpserver.HttpServer;
 import enums.Status;
+import enums.TaskKind;
 import handlers.*;
 import model.Epic;
+import model.SubTask;
 import model.Task;
 
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.net.InetSocketAddress;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 public class HttpTaskServer {
 
@@ -122,6 +127,31 @@ public class HttpTaskServer {
             }
 
             return Duration.ofMinutes(jsonReader.nextLong());
+        }
+    }
+
+    private static class TaskListTypeToken extends TypeToken<List<Task>> {
+
+    }
+
+    private static class EpicListTypeToken extends TypeToken<List<Epic>> {
+
+    }
+
+    private static class SubTaskListTypeToken extends TypeToken<List<SubTask>> {
+
+    }
+
+    public static Type getTaskType(TaskKind taskKind) {
+        switch (taskKind) {
+            case TASK:
+                return new TaskListTypeToken().getType();
+            case EPIC:
+                return new EpicListTypeToken().getType();
+            case SUB_TASK:
+                return new SubTaskListTypeToken().getType();
+            default:
+                return null;
         }
     }
 }

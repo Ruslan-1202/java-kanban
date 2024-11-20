@@ -52,27 +52,13 @@ public class BaseHttpHandler {
         }
 
         switch (endpoint) {
-            case GET_TASKS -> {
-                readTasks(taskKind, exchange);
-            }
-            case GET_ONE_TASK -> {
-                getTask(taskKind, exchange);
-            }
-            case UPDATE_TASK, CREATE_TASK -> {
-                updateTask(taskKind, exchange);
-            }
-            case DELETE_TASK -> {
-                deleteTask(taskKind, exchange);
-            }
-            case GET_EPIC_SUBTASKS -> {
-                getSubtasks(taskKind, exchange);
-            }
-            case GET_HISTORY -> {
-                getHistory(exchange);
-            }
-            case GET_PRIORITIZED -> {
-                getPioritized(exchange);
-            }
+            case GET_TASKS -> readTasks(taskKind, exchange);
+            case GET_ONE_TASK -> getTask(taskKind, exchange);
+            case UPDATE_TASK, CREATE_TASK -> updateTask(taskKind, exchange);
+            case DELETE_TASK -> deleteTask(taskKind, exchange);
+            case GET_EPIC_SUBTASKS -> getSubtasks(taskKind, exchange);
+            case GET_HISTORY -> getHistory(exchange);
+            case GET_PRIORITIZED -> getPioritized(exchange);
         }
     }
 
@@ -238,7 +224,7 @@ public class BaseHttpHandler {
 
         if (pathParts.length == 2) {
             if (requestMethod.equals("GET")) {
-                Url url = Url.valueOf(pathParts[1]);
+                Url url = Url.valueOf(pathParts[1].toUpperCase());
                 switch (url) {
                     case TASKS, EPICS, SUBTASKS:
                         if (url == this.url) {

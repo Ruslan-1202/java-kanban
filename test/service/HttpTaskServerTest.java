@@ -7,7 +7,9 @@ import model.Epic;
 import model.Task;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import utils.TestUtils;
 
 import java.io.IOException;
 import java.net.URI;
@@ -20,6 +22,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static service.HttpTaskServer.getTaskType;
 
 public class HttpTaskServerTest {
 
@@ -101,5 +104,30 @@ public class HttpTaskServerTest {
         assertNotNull(tasksFromManager, "Задачи не возвращаются");
         assertEquals(1, tasksFromManager.size(), "Некорректное количество задач");
         assertEquals("Task 1", tasksFromManager.get(0).getName(), "Некорректное имя задачи");
+    }
+
+    @Test
+    @DisplayName("Проверка prioritized")
+    public void testPrioritizedTasks() throws IOException, InterruptedException {
+        // создаём задачу
+        Task task1 = manager.addTask(new Task("Task 1", "Descr task 1"));
+        TestUtils.sleepTask();
+        Task task2 = manager.addTask(new Task("Task 2", "Descr task 2"));
+
+        // создаём HTTP-клиент и запрос
+        HttpClient client = HttpClient.newHttpClient();
+        URI url = URI.create("http://localhost:8080/prioritized");
+        HttpRequest request = HttpRequest.newBuilder().uri(url).GET().build();
+
+
+        // вызываем рест, отвечающий за создание задач
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+        List<Task> tasks = gson.fromJson(response.body(), getTaskType(TaskKind.TASK));
+        TaskKind taskKind = tasks.get(0).getTaskKind();
+        // проверяем код ответа
+        assertEquals(200, response.statusCode());
+        assertEquals(2, tasks.size());
+        assertEquals(taskKind, TaskKind.TASK);
     }
 }
